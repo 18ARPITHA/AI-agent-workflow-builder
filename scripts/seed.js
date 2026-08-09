@@ -1,15 +1,15 @@
-const BACKEND_URL = process.env.NHOST_BACKEND_URL;
+const AUTH_URL = process.env.NHOST_AUTH_URL;
+const GRAPHQL_URL = process.env.NHOST_GRAPHQL_URL;
 const ADMIN_SECRET = process.env.HASURA_ADMIN_SECRET;
-const GRAPHQL_URL = `${BACKEND_URL}/v1/graphql`;
 const PASSWORD = "Passw0rd!2026";
 
-if (!BACKEND_URL || !ADMIN_SECRET) {
-  console.error("Set NHOST_BACKEND_URL and HASURA_ADMIN_SECRET env vars first.");
+if (!AUTH_URL || !GRAPHQL_URL || !ADMIN_SECRET) {
+  console.error("Set NHOST_AUTH_URL, NHOST_GRAPHQL_URL, and HASURA_ADMIN_SECRET env vars first.");
   process.exit(1);
 }
 
 async function signUp(email) {
-  const res = await fetch(`${BACKEND_URL}/v1/auth/signup/email-password`, {
+  const res = await fetch(`${AUTH_URL}/signup/email-password`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password: PASSWORD }),
