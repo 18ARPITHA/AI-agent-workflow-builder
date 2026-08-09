@@ -4,7 +4,7 @@ import { createClient as createWsClient } from "graphql-ws";
 import { getMainDefinition } from "@apollo/client/utilities";
 import { nhost } from "./nhost";
 
-function authHeaders() {
+function authHeaders(): Record<string, string> {
   const token = nhost.auth.getAccessToken();
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
