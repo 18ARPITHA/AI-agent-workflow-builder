@@ -25,7 +25,7 @@ export default function Home() {
 
   useEffect(() => {
     setSignedIn(nhost.auth.isAuthenticated());
-    const { unsubscribe } = nhost.auth.onAuthStateChanged((_event, session) => {
+   const unsubscribe = nhost.auth.onAuthStateChanged((_event, session) => {
       setSignedIn(!!session);
     });
     return () => unsubscribe();
