@@ -1,0 +1,19 @@
+# Scheduled trigger type. This single cron trigger runs every minute and
+# calls the scheduled-runner function, which itself looks at
+# workflow_triggers rows of type = 'scheduled' and evaluates each row's own
+# `config.cron` expression against the current time — that's what lets
+# every *workflow* have its own cron schedule without needing one static
+# Hasura cron_trigger per workflow.
+- name: scheduled_trigger_runner
+  webhook: "{{SCHEDULED_RUNNER_URL}}"
+  schedule: "* * * * *"
+  include_in_metadata: true
+  payload: {}
+  retry_conf:
+    num_retries: 1
+    timeout_seconds: 60
+    tolerance_seconds: 21600
+  headers:
+    - name: X-Webhook-Secret
+      value_from_env: ACTIONS_WEBHOOK_SECRET
+  comment: "Ticks every minute; fans out to any workflow whose scheduled trigger cron matches now."

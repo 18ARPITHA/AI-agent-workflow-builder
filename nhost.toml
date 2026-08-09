@@ -1,0 +1,25 @@
+version: 3
+
+services:
+  functions:
+    path: functions
+
+hasura:
+  version: v2.36.0
+  adminSecret: ${{ secrets.HASURA_ADMIN_SECRET }}
+  webhookSecret: ${{ secrets.HASURA_WEBHOOK_SECRET }}
+  jwtSecrets:
+    - type: HS256
+      key: ${{ secrets.HASURA_GRAPHQL_JWT_SECRET }}
+
+auth:
+  version: 0.30.0
+  redirectUrl: http://localhost:3000
+
+postgres:
+  version: 14
+
+# Local dev env vars consumed by functions/ (see functions/.env.example) and
+# by hasura/metadata/actions.yaml + cron_triggers.yaml (webhook_from_env /
+# value_from_env references) — set real values in .secrets for local dev,
+# and in the nhost dashboard's env vars for the deployed project.

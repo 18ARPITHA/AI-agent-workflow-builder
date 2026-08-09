@@ -1,0 +1,27 @@
+type TriggerWorkflowRunOutput {
+  run_id: uuid!
+  status: String!
+}
+
+type ApproveStepOutput {
+  step_run_id: uuid!
+  run_status: String!
+}
+
+input TriggerWorkflowRunInput {
+  workflow_id: uuid!
+  # optional bearer token, only required when this Action is being called
+  # by the webhook trigger handler on behalf of an external caller rather
+  # than a logged-in user (see functions/actions/triggerWorkflowRun.ts)
+  webhook_token: String
+}
+
+input ApproveStepInput {
+  step_run_id: uuid!
+  approve: Boolean!   # false = reject, ends the run as `failed`
+}
+
+type Mutation {
+  triggerWorkflowRun(input: TriggerWorkflowRunInput!): TriggerWorkflowRunOutput
+  approveStep(input: ApproveStepInput!): ApproveStepOutput
+}

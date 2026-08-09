@@ -1,0 +1,43 @@
+actions:
+  - name: triggerWorkflowRun
+    definition:
+      kind: synchronous
+      handler: "{{TRIGGER_WORKFLOW_RUN_HANDLER_URL}}"
+      forward_client_headers: true   # so the handler sees X-Hasura-User-Id / Authorization
+      headers:
+        - name: X-Webhook-Secret
+          value_from_env: ACTIONS_WEBHOOK_SECRET
+      timeout: 60
+    permissions:
+      - role: user   # every authenticated user may CALL it; the handler itself
+                      # verifies owner/editor membership + quota before doing anything
+
+  - name: approveStep
+    definition:
+      kind: synchronous
+      handler: "{{APPROVE_STEP_HANDLER_URL}}"
+      forward_client_headers: true
+      headers:
+        - name: X-Webhook-Secret
+          value_from_env: ACTIONS_WEBHOOK_SECRET
+      timeout: 30
+    permissions:
+      - role: user   # handler verifies the approver's role in that specific org
+
+custom_types:
+  enums: []
+  input_objects: []
+  objects:
+    - name: TriggerWorkflowRunOutput
+      fields:
+        - name: run_id
+          type: uuid!
+        - name: status
+          type: String!
+    - name: ApproveStepOutput
+      fields:
+        - name: step_run_id
+          type: uuid!
+        - name: run_status
+          type: String!
+  scalars: []
